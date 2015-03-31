@@ -20,7 +20,7 @@ class WixPlugin implements Plugin<Project> {
 
   private Project project
   private WixExtension extension
-  
+
   void apply(Project project) {
     this.project = project
 
@@ -42,9 +42,9 @@ class WixPlugin implements Plugin<Project> {
     def task = project.tasks.create(TASK_HEAT_NAME, HeatTask)
     task.description = TASK_HEAT_DESC
     //task.group = WIX_GROUP
-    task.conventionMapping.inputDir = { extension.inputDir }
-    task.conventionMapping.outputFile = { extension.harvestFile }
     task.conventionMapping.wixBinPath = { extension.binPath }
+    task.conventionMapping.inputDir   = { extension.jarsDir }
+    task.conventionMapping.outputFile = { extension.heatOutputFile }
     task
   }
 
@@ -53,14 +53,13 @@ class WixPlugin implements Plugin<Project> {
     task.description = TASK_CANDLE_DESC
     //task.group = WIX_GROUP
     task.dependsOn TASK_HEAT_NAME
-    task.conventionMapping.sourceDir = { extension.sourceDir }
+    task.conventionMapping.wixBinPath  = { extension.binPath }
+    task.conventionMapping.sourceDir   = { extension.sourceDir }
     task.conventionMapping.harvestFile = { project.tasks[TASK_HEAT_NAME].outputFile }
-    task.conventionMapping.objectDir = { extension.objectDir }
-    //  inputs.file project.fileTree(dir: project.wix.sourceDir, include: '**/*.wxs')
-    task.conventionMapping.jarsDir = { extension.inputDir }
-    task.conventionMapping.version = { extension.version }
-    task.conventionMapping.platform = { extension.platform }
-    task.conventionMapping.wixBinPath = { extension.binPath }
+    task.conventionMapping.objectDir   = { extension.objectDir }
+    task.conventionMapping.jarsDir     = { extension.jarsDir }
+    task.conventionMapping.version     = { extension.version }
+    task.conventionMapping.platform    = { extension.platform }
     task
   }
 
@@ -69,7 +68,7 @@ class WixPlugin implements Plugin<Project> {
     task.description = TASK_LIGHT_DESC
     //task.group = WIX_GROUP
     task.dependsOn TASK_CANDLE_NAME
-    task.conventionMapping.objectDir = { extension.objectDir }
+    task.conventionMapping.objectDir  = { extension.objectDir }
     task.conventionMapping.outputFile = { extension.outputFile }
     task.conventionMapping.wixBinPath = { extension.binPath }
     task
@@ -85,7 +84,5 @@ class WixPlugin implements Plugin<Project> {
 
   // TODO: set up task dependencies after config instead of inline
   // TODO: clean up convention names
-  // TODO: filter wxs source files in inputs
-  // TODO: check tool results explicitly
   // TODO: use properties in Candle
 }
