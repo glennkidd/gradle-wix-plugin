@@ -29,6 +29,7 @@ class WixPlugin implements Plugin<Project> {
     createCandleTask()
     createLightTask()
     createWixTask()
+    linkTasks()
   }
 
   def createExtension() {
@@ -52,7 +53,6 @@ class WixPlugin implements Plugin<Project> {
     def task = project.tasks.create(TASK_CANDLE_NAME, CandleTask)
     task.description = TASK_CANDLE_DESC
     //task.group = WIX_GROUP
-    task.dependsOn TASK_HEAT_NAME
     task.conventionMapping.wixBinPath  = { extension.binPath }
     task.conventionMapping.sourceDir   = { extension.sourceDir }
     task.conventionMapping.harvestFile = { project.tasks[TASK_HEAT_NAME].outputFile }
@@ -67,7 +67,6 @@ class WixPlugin implements Plugin<Project> {
     def task = project.tasks.create(TASK_LIGHT_NAME, LightTask)
     task.description = TASK_LIGHT_DESC
     //task.group = WIX_GROUP
-    task.dependsOn TASK_CANDLE_NAME
     task.conventionMapping.objectDir  = { extension.objectDir }
     task.conventionMapping.outputFile = { extension.outputFile }
     task.conventionMapping.wixBinPath = { extension.binPath }
@@ -78,11 +77,21 @@ class WixPlugin implements Plugin<Project> {
     def task = project.tasks.create(TASK_WIX_NAME, DefaultTask)
     task.description = TASK_WIX_DESC
     task.group = WIX_GROUP
-    task.dependsOn TASK_LIGHT_NAME
     task
   }
 
-  // TODO: set up task dependencies after config instead of inline
-  // TODO: clean up convention names
+  def linkTasks() {
+    def wixTask = project.tasks[TASK_WIX_NAME]
+    def lightTask = project.tasks[TASK_LIGHT_NAME]
+    def candleTask = project.tasks[TASK_CANDLE_NAME]
+    
+    wixTask.dependsOn(lightTask)
+    lightTask.dependsOn(candleTask)
+    
+    project.tasks.withType(HeatTask) { HeatTask t ->
+      candleTask.dependsOn(t)
+    }
+  }
+
   // TODO: use properties in Candle
 }
