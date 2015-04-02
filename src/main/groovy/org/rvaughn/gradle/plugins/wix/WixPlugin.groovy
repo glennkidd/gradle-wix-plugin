@@ -106,5 +106,4 @@ class WixPlugin implements Plugin<Project> {
   }
 
   // TODO: make "jarDir" defs configurable
-  // TODO: set defaults for TTS use
 }

@@ -75,4 +75,12 @@ class WixExtension {
   void setProperties(Map<String, String> newProps) {
     properties.putAll(newProps)
   }
+
+  Map<String, String> getProperties() {
+    // this is a bit of a hack - we always need the Version and JarDir properties
+    // for the builds this was authored for, so we default those here.
+    def allProps = [Version: version, JarDir: jarsDir]
+    allProps.putAll(properties)
+    allProps
+  }
 }
