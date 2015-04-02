@@ -99,9 +99,12 @@ class WixPlugin implements Plugin<Project> {
       candleTask.dependsOn(t)
       t.dependsOn(gatherTask)
     }
+
+    gatherTask.dependsOn(project.tasks.jar)
+
+    project.tasks.assemble.dependsOn(wixTask)
   }
 
   // TODO: make "jarDir" defs configurable
   // TODO: set defaults for TTS use
-  // TODO: build depends on wix
 }
