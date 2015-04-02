@@ -44,7 +44,7 @@ class WixExtension {
     sourceDir = new File("src\\main\\install")
     objectDir = new File("${project.buildDir}\\wix\\obj")
     platform = 'x64'
-    version = '1.0.0.1'
+    version = project.version == 'unspecified' ? '1.0.0.1' : project.version
     
     outputDir = new File("${project.buildDir}\\distributions")
     outputBaseName = "${project.name}"
