@@ -11,6 +11,9 @@ class HeatTask extends ConventionTask {
   @OutputFile
   File outputFile
 
+  String componentGroupId
+  String directoryRefId
+  String sourceDirVarName
   String wixBinPath
 
   HeatTask() {
@@ -25,9 +28,9 @@ class HeatTask extends ConventionTask {
       args '-nologo'
       args '-o', getOutputFile()
       args '-gg'
-      args '-cg', 'JarFiles'
-      args '-dr', 'D_libDir'
-      args '-var', 'var.JarDir'
+      args '-cg', getComponentGroupId()
+      args '-dr', getDirectoryRefId()
+      args '-var', getSourceDirVarName()
       args '-scom', '-sreg', '-sfrag', '-srd'
     }
     didWork = true

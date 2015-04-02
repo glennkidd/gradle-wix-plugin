@@ -13,6 +13,9 @@ class WixExtension {
   File generatedSourceDir
   String heatOutputFileName
   File heatOutputFile
+  String heatComponentGroupId
+  String heatDirectoryRefId
+  String heatSourceDirVarName
 
   // candle
   File sourceDir
@@ -40,6 +43,9 @@ class WixExtension {
     jarsDir = new File("${project.buildDir}\\wix\\jars")
     generatedSourceDir = new File("${project.buildDir}\\wix\\src")
     heatOutputFileName = 'gen.wxs'
+    heatComponentGroupId = 'JarFiles'
+    heatDirectoryRefId = 'D_libDir'
+    heatSourceDirVarName = 'var.JarDir' // this must be defined in properties
     
     sourceDir = new File("src\\main\\install")
     objectDir = new File("${project.buildDir}\\wix\\obj")

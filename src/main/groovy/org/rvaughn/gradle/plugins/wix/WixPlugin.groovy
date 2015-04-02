@@ -55,6 +55,9 @@ class WixPlugin implements Plugin<Project> {
     task.conventionMapping.wixBinPath = { extension.binPath }
     task.conventionMapping.inputDir   = { extension.jarsDir }
     task.conventionMapping.outputFile = { extension.heatOutputFile }
+    task.conventionMapping.componentGroupId = { extension.heatComponentGroupId }
+    task.conventionMapping.directoryRefId   = { extension.heatDirectoryRefId }
+    task.conventionMapping.sourceDirVarName = { extension.heatSourceDirVarName }
     task
   }
 
@@ -104,6 +107,4 @@ class WixPlugin implements Plugin<Project> {
 
     project.tasks.assemble.dependsOn(wixTask)
   }
-
-  // TODO: make "jarDir" defs configurable
 }
