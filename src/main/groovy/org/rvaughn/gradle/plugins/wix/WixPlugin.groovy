@@ -33,16 +33,12 @@ class WixPlugin implements Plugin<Project> {
   }
 
   def createExtension() {
-    // conventions go into the project scope - not namespaced!
-    // convention = new WixConvention(project)
-    // project.convention.plugins.wix = convention
     extension = project.extensions.create('wix', WixExtension, project)
   }
 
   def createHeatTask() {
     def task = project.tasks.create(TASK_HEAT_NAME, HeatTask)
     task.description = TASK_HEAT_DESC
-    //task.group = WIX_GROUP
     task.conventionMapping.wixBinPath = { extension.binPath }
     task.conventionMapping.inputDir   = { extension.jarsDir }
     task.conventionMapping.outputFile = { extension.heatOutputFile }
@@ -52,21 +48,18 @@ class WixPlugin implements Plugin<Project> {
   def createCandleTask() {
     def task = project.tasks.create(TASK_CANDLE_NAME, CandleTask)
     task.description = TASK_CANDLE_DESC
-    //task.group = WIX_GROUP
-    task.conventionMapping.wixBinPath  = { extension.binPath }
-    task.conventionMapping.sourceDir   = { extension.sourceDir }
-    task.conventionMapping.harvestFile = { project.tasks[TASK_HEAT_NAME].outputFile }
-    task.conventionMapping.objectDir   = { extension.objectDir }
-    task.conventionMapping.jarsDir     = { extension.jarsDir }
-    task.conventionMapping.version     = { extension.version }
-    task.conventionMapping.platform    = { extension.platform }
+    task.conventionMapping.wixBinPath      = { extension.binPath }
+    task.conventionMapping.sourceDir       = { extension.sourceDir }
+    task.conventionMapping.harvestFile     = { project.tasks[TASK_HEAT_NAME].outputFile }
+    task.conventionMapping.objectDir       = { extension.objectDir }
+    task.conventionMapping.platform        = { extension.platform }
+    task.conventionMapping.extraProperties = { extension.properties }
     task
   }
 
   def createLightTask() {
     def task = project.tasks.create(TASK_LIGHT_NAME, LightTask)
     task.description = TASK_LIGHT_DESC
-    //task.group = WIX_GROUP
     task.conventionMapping.objectDir  = { extension.objectDir }
     task.conventionMapping.outputFile = { extension.outputFile }
     task.conventionMapping.wixBinPath = { extension.binPath }
@@ -93,5 +86,8 @@ class WixPlugin implements Plugin<Project> {
     }
   }
 
-  // TODO: use properties in Candle
+  // TODO: make "jarDir" defs configurable
+  // TODO: pull deliver task in
+  // TODO: set defaults for TTS use
+  // TODO: build depends on wix
 }

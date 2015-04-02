@@ -12,14 +12,12 @@ class CandleTask extends ConventionTask {
   @InputFile
   File harvestFile
 
-  // should we map the individual wixobj files instead?
   @OutputDirectory
   File objectDir
 
-  File jarsDir
-  String version
   String platform
   String wixBinPath
+  Map<String, String> extraProperties
 
   @TaskAction
   void perform() {
@@ -29,8 +27,7 @@ class CandleTask extends ConventionTask {
       args '-nologo'
       args '-o', "${objectDir}\\"
       args "-I${sourceDir}"
-      args "-dJarDir=${jarsDir}"
-      args "-dVersion=${version}"
+      extraProperties.each { k, v -> args "-d${k}=${v}" }
       args '-arch', getPlatform()
       args sourceFiles
     }

@@ -27,9 +27,11 @@ class WixExtension {
 
   // all
   String binPath
+  Map<String, String> properties
 
   WixExtension(Project project) {
     this.project = project
+    properties = new HashMap<String, String>()
 
     binPath = "${System.getenv('WIX')}bin"
 
@@ -66,5 +68,9 @@ class WixExtension {
       return outputFile
     else
       return new File(outputDir, getOutputFileName())
+  }
+
+  void setProperties(Map<String, String> newProps) {
+    properties.putAll(newProps)
   }
 }
