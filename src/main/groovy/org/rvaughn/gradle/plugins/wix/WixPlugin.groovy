@@ -3,16 +3,19 @@ package org.rvaughn.gradle.plugins.wix
 import org.gradle.api.DefaultTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.tasks.Sync
 
 class WixPlugin implements Plugin<Project> {
   static final String WIX_PLUGIN_NAME = 'wix'
   static final String WIX_GROUP = WIX_PLUGIN_NAME
 
+  static final String TASK_GATHER_NAME = 'gatherJars'
   static final String TASK_HEAT_NAME = 'heat'
   static final String TASK_CANDLE_NAME = 'candle'
   static final String TASK_LIGHT_NAME = 'light'
   static final String TASK_WIX_NAME = 'wix'
 
+  static final String TASK_GATHER_DESC = 'Copies all runtime jars to a single directory.'
   static final String TASK_HEAT_DESC = 'Creates a WiX source file from dynamic files.'
   static final String TASK_CANDLE_DESC = 'Compile WiX source files.'
   static final String TASK_LIGHT_DESC = 'Links WiX object files into an MSI.'
@@ -25,6 +28,7 @@ class WixPlugin implements Plugin<Project> {
     this.project = project
 
     createExtension()
+    createGatherTask()
     createHeatTask()
     createCandleTask()
     createLightTask()
@@ -34,6 +38,15 @@ class WixPlugin implements Plugin<Project> {
 
   def createExtension() {
     extension = project.extensions.create('wix', WixExtension, project)
+  }
+
+  def createGatherTask() {
+    def task = project.tasks.create(TASK_GATHER_NAME, Sync)
+    task.description = TASK_GATHER_DESC
+    task.from(project.configurations.runtime)
+    task.from(project.tasks.jar.archivePath)
+    task.into({ extension.jarsDir })
+    task
   }
 
   def createHeatTask() {
@@ -77,17 +90,18 @@ class WixPlugin implements Plugin<Project> {
     def wixTask = project.tasks[TASK_WIX_NAME]
     def lightTask = project.tasks[TASK_LIGHT_NAME]
     def candleTask = project.tasks[TASK_CANDLE_NAME]
+    def gatherTask = project.tasks[TASK_GATHER_NAME]
     
     wixTask.dependsOn(lightTask)
     lightTask.dependsOn(candleTask)
     
     project.tasks.withType(HeatTask) { HeatTask t ->
       candleTask.dependsOn(t)
+      t.dependsOn(gatherTask)
     }
   }
 
   // TODO: make "jarDir" defs configurable
-  // TODO: pull deliver task in
   // TODO: set defaults for TTS use
   // TODO: build depends on wix
 }

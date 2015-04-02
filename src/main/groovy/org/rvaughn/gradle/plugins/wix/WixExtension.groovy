@@ -6,8 +6,10 @@ class WixExtension {
 
   final Project project
 
-  // heat
+  // gather/heat
   File jarsDir
+
+  // heat
   File generatedSourceDir
   String heatOutputFileName
   File heatOutputFile
@@ -35,7 +37,7 @@ class WixExtension {
 
     binPath = "${System.getenv('WIX')}bin"
 
-    // no default for jarsDir
+    jarsDir = new File("${project.buildDir}\\wix\\jars")
     generatedSourceDir = new File("${project.buildDir}\\wix\\src")
     heatOutputFileName = 'gen.wxs'
     
