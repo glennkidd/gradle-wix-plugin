@@ -105,6 +105,7 @@ class WixPlugin implements Plugin<Project> {
 
     gatherTask.dependsOn(project.tasks.jar)
 
-    project.tasks.assemble.dependsOn(wixTask)
+    // this prevents simple builds on non-Windows platforms
+    // project.tasks.assemble.dependsOn(wixTask)
   }
 }
